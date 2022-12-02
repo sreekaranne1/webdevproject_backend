@@ -80,7 +80,7 @@ exports.loginUserDao = async (req, res, next) => {
                       msg: "User Logged",
                       token,
                       logged: true,
-                      fn: user.firstname,
+                      userObject: user,
                     });
                   }
                 )
