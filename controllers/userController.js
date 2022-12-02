@@ -32,8 +32,7 @@ exports.registerUser = async (req, res, next) => {
   if (matched) {
     return await registerUserDao(req, res, next);
   } else {
-    return res.json({
-      status: 400,
+    return res.status(400).json({
       msg: "incorrect parameters",
       err: v.errors,
     });
