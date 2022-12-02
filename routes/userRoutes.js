@@ -15,6 +15,7 @@ const {
   getFollowing,
   searchUser,
   checkUserName,
+  checkEmail,
 } = require("../controllers/userController");
 
 //Routes config
@@ -27,6 +28,7 @@ router.route("/getfollowers/:uid").get(getFollowers);
 router.route("/getfollowing/:uid").get(getFollowing);
 router.route("/searchuser/:search").get(searchUser);
 router.route("/checkusername/:search").get(checkUserName);
+router.route("/checkemail/:search").get(checkEmail);
 
 // router.route("/profile/following/:uid").get(auth, getFollowing);
 // router.route("/profile/follower/:uid").get(auth, getFollowers);

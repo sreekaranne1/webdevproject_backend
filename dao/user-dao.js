@@ -365,3 +365,18 @@ exports.checkUserNameDao = async (req, res, next) => {
     });
   }
 };
+exports.checkEmailDao = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.params.search });
+    if (user) {
+      return res.json({ status: 200, available: false });
+    } else {
+      return res.json({ status: 200, available: true });
+    }
+  } catch (err) {
+    return res.json({
+      status: 500,
+      err: err.stack,
+    });
+  }
+};

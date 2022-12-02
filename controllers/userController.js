@@ -12,6 +12,7 @@ const {
   getFollowingDao,
   searchUserDao,
   checkUserNameDao,
+  checkEmailDao,
 } = require("../dao/user-dao");
 
 //Route functions
@@ -163,6 +164,22 @@ exports.checkUserName = async (req, res, next) => {
   const matched = await v.check();
   if (matched) {
     return checkUserNameDao(req, res, next);
+  } else {
+    return res.json({
+      status: 400,
+      msg: "incorrect parameters",
+      err: v.errors,
+    });
+  }
+};
+
+exports.checkEmail = async (req, res, next) => {
+  const v = new Validator(req.params, {
+    search: "required",
+  });
+  const matched = await v.check();
+  if (matched) {
+    return checkEmailDao(req, res, next);
   } else {
     return res.json({
       status: 400,
