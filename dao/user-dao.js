@@ -42,10 +42,9 @@ exports.registerUserDao = async (req, res, next) => {
       (err, token) => {
         if (err) {
           //Response
-          return res.json({ status: 404, err: err });
+          return res.status(404).json({ err: err });
         }
-        return res.json({
-          status: 200,
+        return res.status(200).json({
           msg: "User created",
           data: user,
           token,
@@ -53,8 +52,7 @@ exports.registerUserDao = async (req, res, next) => {
       }
     );
   } catch (err) {
-    return res.json({
-      status: 500,
+    return res.status(500).json({
       err: err.stack,
     });
   }
@@ -87,8 +85,7 @@ exports.loginUserDao = async (req, res, next) => {
               : res.json({ status: 404, msg: "Wrong password", logged: false })
           );
         } else {
-          return res.json({
-            status: 404,
+          return res.status(404).json({
             msg: "Username does not exist",
             logged: false,
           });
