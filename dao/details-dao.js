@@ -418,6 +418,7 @@ exports.getdetailsDao = async (req, res, next) => {
       gamedetailsProcessed["liked"] = false;
       gamedetailsProcessed["reviewed"] = false;
       gamedetailsProcessed["loggedin"] = false;
+      gamedetailsProcessed["favorited"] = false;
       const token = req.header("x-auth-token");
       if (token) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -438,6 +439,13 @@ exports.getdetailsDao = async (req, res, next) => {
             )
           ) {
             gamedetailsProcessed["reviewed"] = true;
+          }
+          let favorite = await Favorite.find({
+            uid: decoded.id,
+            gameid: req.params.gameid,
+          });
+          if (favorite) {
+            gamedetailsProcessed["favorited"] = true;
           }
         }
       }
