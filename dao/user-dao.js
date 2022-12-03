@@ -89,11 +89,12 @@ exports.loginUserDao = async (req, res, next) => {
                     });
                   }
                 )
-              : res.json({ status: 404, msg: "Wrong password", logged: false })
+              : res.json({ status: 404, err: "Wrong password", logged: false })
           );
         } else {
-          return res.status(404).json({
-            msg: "Username does not exist",
+          return res.json({
+            status:404,
+            err: "Username does not exist",
             logged: false,
           });
         }
