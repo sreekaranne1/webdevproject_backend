@@ -16,6 +16,7 @@ const {
   searchUser,
   checkUserName,
   checkEmail,
+  tokenValidation,
 } = require("../controllers/userController");
 
 //Routes config
@@ -29,6 +30,7 @@ router.route("/getfollowing/:uid").get(getFollowing);
 router.route("/searchuser/:search").get(searchUser);
 router.route("/checkusername/:search").get(checkUserName);
 router.route("/checkemail/:search").get(checkEmail);
+router.route("/tokenvalidation").get(auth, tokenValidation);
 
 // router.route("/profile/following/:uid").get(auth, getFollowing);
 // router.route("/profile/follower/:uid").get(auth, getFollowers);

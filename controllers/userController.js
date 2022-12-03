@@ -13,6 +13,7 @@ const {
   searchUserDao,
   checkUserNameDao,
   checkEmailDao,
+  tokenValidation,
 } = require("../dao/user-dao");
 
 //Route functions
@@ -179,6 +180,21 @@ exports.checkEmail = async (req, res, next) => {
   const matched = await v.check();
   if (matched) {
     return checkEmailDao(req, res, next);
+  } else {
+    return res.json({
+      status: 400,
+      msg: "incorrect parameters",
+      err: v.errors,
+    });
+  }
+};
+exports.tokenValidation = async (req, res, next) => {
+  const v = new Validator(req.user, {
+    id: "required",
+  });
+  const matched = await v.check();
+  if (matched) {
+    return tokenValidation(req, res, next);
   } else {
     return res.json({
       status: 400,

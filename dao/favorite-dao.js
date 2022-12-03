@@ -92,18 +92,27 @@ exports.getFavoritesDao = async (req, res, next) => {
       let favorites = await Favorite.find({
         uid: user._id,
       });
+
       if (favorites) {
-        return res.json({
-          status: 200,
-          msg: "success",
-          data: favorites,
-        });
+        if (req.user.call) {
+          return favorites;
+        } else {
+          return res.json({
+            status: 200,
+            msg: "success",
+            data: favorites,
+          });
+        }
       } else {
-        return res.json({
-          status: 200,
-          msg: "User has no favorites",
-          data: [],
-        });
+        if (req.user.call) {
+          return [];
+        } else {
+          return res.json({
+            status: 200,
+            msg: "User has no favorites",
+            data: [],
+          });
+        }
       }
     } else {
       return res.json({

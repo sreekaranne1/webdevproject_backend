@@ -1,5 +1,6 @@
 //Imports
 const { User, Review } = require("../models/models.js");
+const { getFavoritesDao } = require("./favorite-dao");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -60,8 +61,9 @@ exports.registerUserDao = async (req, res, next) => {
 
 exports.loginUserDao = async (req, res, next) => {
   try {
-    let user = await User.findOne({ username: req.body.username }).then(
-      (user) => {
+    let user = await User.findOne({ username: req.body.username })
+      .lean()
+      .then((user) => {
         if (user) {
           bcrypt.compare(req.body.password, user.password).then((match) =>
             match
@@ -69,10 +71,15 @@ exports.loginUserDao = async (req, res, next) => {
                   { id: user._id },
                   process.env.JWT_SECRET,
                   { expiresIn: "360d" },
-                  (err, token) => {
+                  async (err, token) => {
                     if (err) {
                       return res.json({ err: err });
                     }
+                    req.user = {};
+                    req.user.id = user._id;
+                    req.user.call = true;
+                    let favorites = await getFavoritesDao(req, res, next);
+                    user.favorites = favorites;
                     return res.json({
                       status: 200,
                       msg: "User Logged",
@@ -90,8 +97,7 @@ exports.loginUserDao = async (req, res, next) => {
             logged: false,
           });
         }
-      }
-    );
+      });
   } catch (err) {
     return res.json({
       status: 500,
@@ -107,9 +113,15 @@ exports.getUserDao = async (req, res, next) => {
         path: "activity",
         populate: { path: "review", model: "Review" },
       })
-      .then((user) => {
+      .lean()
+      .then(async (user) => {
         if (user) {
-          res.json({ status: 200, msg: "User found", data: user });
+          req.user = {};
+          req.user.id = req.params.uid;
+          req.user.call = true;
+          let favorites = await getFavoritesDao(req, res, next);
+          user.favorites = favorites;
+          res.json({ status: 200, msg: "User found", userObject: user });
         } else {
           return res.json({
             status: 404,
@@ -370,6 +382,19 @@ exports.checkEmailDao = async (req, res, next) => {
     } else {
       return res.json({ status: 200, available: true });
     }
+  } catch (err) {
+    return res.json({
+      status: 500,
+      err: err.stack,
+    });
+  }
+};
+
+exports.tokenValidation = async (req, res, next) => {
+  try {
+    req.params = {};
+    req.params.uid = req.user.id;
+    this.getUserDao(req, res, next);
   } catch (err) {
     return res.json({
       status: 500,
