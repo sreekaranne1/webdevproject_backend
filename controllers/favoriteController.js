@@ -3,6 +3,7 @@ const {
   removeFavoriteDao,
   addFavoriteDao,
 } = require("../dao/favorite-dao");
+const { Validator } = require("node-input-validator");
 
 exports.addFavorite = async (req, res, next) => {
   const v = new Validator(req.body, {

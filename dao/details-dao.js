@@ -420,23 +420,25 @@ exports.getdetailsDao = async (req, res, next) => {
       gamedetailsProcessed["loggedin"] = false;
       const token = req.header("x-auth-token");
       if (token) {
-        gamedetailsProcessed["loggedin"] = true;
-        gamedetailsProcessed["liked"] = false;
-        gamedetailsProcessed["reviewed"] = false;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        if (
-          gamedetailsProcessed.likes.find(
-            (e) => e.toString() == decoded.id.toString()
-          )
-        ) {
-          gamedetailsProcessed["liked"] = true;
-        }
-        if (
-          gamedetailsProcessed.reviews.find(
-            (e) => e.uid.toString() == decoded.id.toString()
-          )
-        ) {
-          gamedetailsProcessed["reviewed"] = true;
+        if (decoded.id) {
+          gamedetailsProcessed["loggedin"] = true;
+          gamedetailsProcessed["liked"] = false;
+          gamedetailsProcessed["reviewed"] = false;
+          if (
+            gamedetailsProcessed.likes.find(
+              (e) => e.toString() == decoded.id.toString()
+            )
+          ) {
+            gamedetailsProcessed["liked"] = true;
+          }
+          if (
+            gamedetailsProcessed.reviews.find(
+              (e) => e.uid.toString() == decoded.id.toString()
+            )
+          ) {
+            gamedetailsProcessed["reviewed"] = true;
+          }
         }
       }
       return res.json({
