@@ -22,7 +22,7 @@ const {
 //Routes config
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
-router.route("/profile/:uid").get(getUser).post(auth, updateProfile);
+router.route("/profile/:uid").get(getUser).put(auth, updateProfile);
 router.route("/follow").post(auth, followUser);
 router.route("/unfollow").post(auth, unFollowUser);
 router.route("/getfollowers/:uid").get(getFollowers);
