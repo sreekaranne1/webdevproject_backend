@@ -383,7 +383,9 @@ exports.searchUserDao = async (req, res, next) => {
           { firstname: { $regex: searchRgx, $options: "i" } },
           { lastname: { $regex: searchRgx, $options: "i" } },
         ],
-      }).lean.limit(10);
+      })
+        .lean()
+        .limit(10);
     }
     const data = users.map((user) => {
       user.following = false;
@@ -460,7 +462,7 @@ exports.getUserListDao = async (req, res, next) => {
           .limit(4);
       }
     } else {
-      users = await User.find({}).limit(4);
+      users = await User.find({}).lean().limit(4);
     }
     // if (users.length > 4) {
     //   users = users.slice(0, 4);
