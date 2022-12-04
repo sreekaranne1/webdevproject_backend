@@ -216,9 +216,19 @@ exports.addreviewDao = async (req, res, next) => {
                   activity: user.activity,
                 });
                 if (user.acknowledged) {
+                  let userActivities = await User.findOne({
+                    _id: req.user.id,
+                  })
+                    .populate({
+                      path: "activity",
+                      populate: { path: "review", model: "Review" },
+                    })
+                    .lean();
+
                   return res.json({
                     status: 200,
                     msg: "success",
+                    activity: userActivities.activity,
                   });
                 } else {
                   return res.json({
