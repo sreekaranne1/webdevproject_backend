@@ -93,7 +93,7 @@ exports.loginUserDao = async (req, res, next) => {
           );
         } else {
           return res.json({
-            status:404,
+            status: 404,
             err: "Username does not exist",
             logged: false,
           });
@@ -117,6 +117,23 @@ exports.getUserDao = async (req, res, next) => {
       .lean()
       .then(async (user) => {
         if (user) {
+          const token = req.header("x-auth-token");
+          user.following = false;
+          if (token) {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            if (decoded.id) {
+              let user2 = await User.findOne({ _id: decoded.id });
+              if (user2) {
+                if (
+                  user2.following_list.find(
+                    (e) => e.toString() == user._id.toString()
+                  )
+                ) {
+                  user.following = true;
+                }
+              }
+            }
+          }
           req.user = {};
           req.user.id = req.params.uid;
           req.user.call = true;
@@ -340,18 +357,44 @@ exports.getFollowingDao = async (req, res, next) => {
 exports.searchUserDao = async (req, res, next) => {
   try {
     const { search } = req.params;
-    const role = req.query.role.toLowerCase();
     const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
     const searchRgx = rgx(search);
-    const users = await User.find({
-      $or: [
-        { username: { $regex: searchRgx, $options: "i" } },
-        { firstname: { $regex: searchRgx, $options: "i" } },
-        { lastname: { $regex: searchRgx, $options: "i" } },
-      ],
-      role: role,
-    }).limit(10);
-    res.json({ status: 200, data: users });
+    let users = {};
+    const token = req.header("x-auth-token");
+    let decoded = {};
+    if (token) {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+      if (decoded.id) {
+        users = await User.find({
+          $or: [
+            { username: { $regex: searchRgx, $options: "i" } },
+            { firstname: { $regex: searchRgx, $options: "i" } },
+            { lastname: { $regex: searchRgx, $options: "i" } },
+          ],
+          _id: { $ne: decoded.id },
+        })
+          .lean()
+          .limit(10);
+      }
+    } else {
+      users = await User.find({
+        $or: [
+          { username: { $regex: searchRgx, $options: "i" } },
+          { firstname: { $regex: searchRgx, $options: "i" } },
+          { lastname: { $regex: searchRgx, $options: "i" } },
+        ],
+      }).lean.limit(10);
+    }
+    const data = users.map((user) => {
+      user.following = false;
+      if (decoded.id) {
+        if (user.followers_list.find((e) => e.toString() == decoded.id)) {
+          user.following = true;
+        }
+      }
+      return user;
+    });
+    res.json({ status: 200, usersData: data });
   } catch (err) {
     return res.json({
       status: 500,
@@ -396,6 +439,42 @@ exports.tokenValidation = async (req, res, next) => {
     req.params = {};
     req.params.uid = req.user.id;
     this.getUserDao(req, res, next);
+  } catch (err) {
+    return res.json({
+      status: 500,
+      err: err.stack,
+    });
+  }
+};
+
+exports.getUserListDao = async (req, res, next) => {
+  try {
+    let users = {};
+    const token = req.header("x-auth-token");
+    let decoded = {};
+    if (token) {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+      if (decoded.id) {
+        users = await User.find({ _id: { $ne: decoded.id } })
+          .lean()
+          .limit(4);
+      }
+    } else {
+      users = await User.find({}).limit(4);
+    }
+    // if (users.length > 4) {
+    //   users = users.slice(0, 4);
+    // }
+    const data = users.map((user) => {
+      user.following = false;
+      if (decoded.id) {
+        if (user.followers_list.find((e) => e.toString() == decoded.id)) {
+          user.following = true;
+        }
+      }
+      return user;
+    });
+    return res.json({ status: 200, usersData: data });
   } catch (err) {
     return res.json({
       status: 500,

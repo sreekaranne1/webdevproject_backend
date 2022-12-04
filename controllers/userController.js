@@ -14,6 +14,7 @@ const {
   checkUserNameDao,
   checkEmailDao,
   tokenValidation,
+  getUserListDao,
 } = require("../dao/user-dao");
 
 //Route functions
@@ -202,4 +203,7 @@ exports.tokenValidation = async (req, res, next) => {
       err: v.errors,
     });
   }
+};
+exports.getUsersList = async (req, res, next) => {
+  return getUserListDao(req, res, next);
 };
