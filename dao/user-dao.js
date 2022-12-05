@@ -33,6 +33,9 @@ exports.registerUserDao = async (req, res, next) => {
       followers_count: 0,
       following_count: 0,
     };
+    if (req.body.role == "creator") {
+      user.createdGames = [];
+    }
     //Db save
     user = await User.create(user);
 
@@ -75,6 +78,13 @@ exports.loginUserDao = async (req, res, next) => {
                     if (err) {
                       return res.json({ err: err });
                     }
+                    user = await User.findOne({ username: req.body.username })
+                      .populate({
+                        path: "activity",
+                        populate: { path: "review", model: "Review" },
+                      })
+                      .populate("createdGames")
+                      .lean();
                     req.user = {};
                     req.user.id = user._id;
                     req.user.call = true;

@@ -39,7 +39,7 @@ var userSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    required: true, 
+    required: true,
     lowercase: true,
   },
   password: {
@@ -67,8 +67,31 @@ var userSchema = new Schema({
   following_list: [{ type: mongoose.ObjectId, ref: "User" }],
   followers_list: [{ type: mongoose.ObjectId, ref: "User" }],
   activity: [{ type: mongoose.ObjectId, ref: "Activity" }],
+  createdGames: [{ type: mongoose.ObjectId, ref: "CreatedGames" }],
   following_count: Number,
   followers_count: Number,
+});
+
+var createdGames = new Schema({
+  uid: { type: mongoose.ObjectId, ref: "User" },
+  name: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+  },
+  genres: {
+    type: Array,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  stores: {
+    type: Array,
+  },
 });
 
 var detailsSchema = new Schema({
@@ -120,10 +143,12 @@ const Game = mongoose.model("Game", detailsSchema);
 const Activity = mongoose.model("Activity", activitySchema);
 const Favorite = mongoose.model("Favorite", favritesSchema);
 const Review = mongoose.model("Review", review);
+const CreatedGames = mongoose.model("CreatedGames", createdGames);
 module.exports = {
   User,
   Game,
   Activity,
   Favorite,
   Review,
+  CreatedGames,
 };

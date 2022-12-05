@@ -18,10 +18,12 @@ const home_routes = require("./routes/homeRoutes");
 const user_routes = require("./routes/userRoutes");
 const detail_routes = require("./routes/detailsRouter");
 const favorite_routes = require("./routes/favoriteRoutes");
+const games_routes = require("./routes/gamesRouter");
 app.use("/", user_routes);
 app.use("/home", home_routes);
 app.use("/details", detail_routes);
 app.use("/favorites", favorite_routes);
+app.use("/games", games_routes);
 
 //Mongoose
 const connectDb = async () => {
