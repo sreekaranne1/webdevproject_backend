@@ -218,7 +218,12 @@ exports.followUserDao = async (req, res, next) => {
           followers_list: fuser.followers_list,
           followers_count: fuser.followers_list.length,
         });
-        return res.json({ status: 200, updated: true, msg: "success" });
+        return res.json({
+          status: 200,
+          updated: true,
+          msg: "success",
+          following_list: user.following_list,
+        });
       } else {
         return res.json({
           status: 404,
@@ -265,7 +270,12 @@ exports.unFollowUserDao = async (req, res, next) => {
           followers_list: fuserUpdated,
           followers_count: fuserUpdated.length,
         });
-        return res.json({ status: 200, updated: true, msg: "success" });
+        return res.json({
+          status: 200,
+          updated: true,
+          msg: "success",
+          following_list: userUpdated,
+        });
       } else {
         return res.json({
           status: 404,
