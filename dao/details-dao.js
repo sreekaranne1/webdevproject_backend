@@ -50,9 +50,18 @@ exports.likeGameDao = async (req, res, next) => {
                 activity: user.activity,
               });
               if (user.acknowledged) {
+                let userActivities = await User.findOne({
+                  _id: req.user.id,
+                })
+                  .populate({
+                    path: "activity",
+                    populate: { path: "review", model: "Review" },
+                  })
+                  .lean();
                 return res.json({
                   status: 200,
                   msg: "success",
+                  activity: userActivities.activity,
                 });
               } else {
                 return res.json({
@@ -126,9 +135,18 @@ exports.disLikeGameDao = async (req, res, next) => {
                 activity: user.activity,
               });
               if (user.acknowledged) {
+                let userActivities = await User.findOne({
+                  _id: req.user.id,
+                })
+                  .populate({
+                    path: "activity",
+                    populate: { path: "review", model: "Review" },
+                  })
+                  .lean();
                 return res.json({
                   status: 200,
                   msg: "success",
+                  activity: userActivities.activity,
                 });
               } else {
                 return res.json({
@@ -316,9 +334,18 @@ exports.deleteReviewDao = async (req, res, next) => {
                 date: Date.now(),
               });
               if (user.acknowledged) {
+                let userActivities = await User.findOne({
+                  _id: req.user.id,
+                })
+                  .populate({
+                    path: "activity",
+                    populate: { path: "review", model: "Review" },
+                  })
+                  .lean();
                 return res.json({
                   status: 200,
                   msg: "success",
+                  activity: userActivities.activity,
                 });
               } else {
                 return res.json({
@@ -376,9 +403,18 @@ exports.updateReviewDao = async (req, res, next) => {
       if (review.acknowledged) {
         activityUpdated = activity.updateOne({ date: Date.now() });
         if (activityUpdated) {
+          let userActivities = await User.findOne({
+            _id: req.user.id,
+          })
+            .populate({
+              path: "activity",
+              populate: { path: "review", model: "Review" },
+            })
+            .lean();
           return res.json({
             status: 200,
             msg: "success",
+            activity: userActivities.activity,
           });
         } else {
           return res.json({
