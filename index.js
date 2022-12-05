@@ -39,5 +39,5 @@ const connectDb = async () => {
 connectDb();
 
 //Server
-const PORT = process.env.SERVER_PORT || 8080;
+const PORT = 8080;
 app.listen(PORT, console.log(`Server running on ${PORT}`));

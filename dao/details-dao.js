@@ -1,5 +1,11 @@
 const axios = require("axios");
-const { User, Activity, Game, Review } = require("../models/models.js");
+const {
+  User,
+  Activity,
+  Game,
+  Review,
+  Favorite,
+} = require("../models/models.js");
 const dotenv = require("dotenv");
 dotenv.config({ path: "../.env" });
 const jwt = require("jsonwebtoken");
