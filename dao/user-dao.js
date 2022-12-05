@@ -223,6 +223,7 @@ exports.followUserDao = async (req, res, next) => {
           updated: true,
           msg: "success",
           following_list: user.following_list,
+          following_count: user.following_list.length,
         });
       } else {
         return res.json({
@@ -275,6 +276,7 @@ exports.unFollowUserDao = async (req, res, next) => {
           updated: true,
           msg: "success",
           following_list: userUpdated,
+          following_count: userUpdated.length,
         });
       } else {
         return res.json({
