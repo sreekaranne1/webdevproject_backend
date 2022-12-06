@@ -4,12 +4,20 @@ const auth = require("../controllers/authMiddleware");
 
 //Import route functions
 const router = express.Router();
-const { createGame } = require("../controllers/gamesController");
+const {
+  createGame,
+  updateGame,
+  deleteGame,
+  getCreatedGames,
+  searchCreatedGames,
+  getGames,
+} = require("../controllers/gamesController");
 
 // //Route config
-router.route("/creategame").get(auth, createGame);
-// router.route("/search").post(auth,searchGame);
-// router.route("/logout").get(auth,logout);
-// router.route("/game/:id").get(auth, getGame)
+router.route("/createdgame").post(auth, createGame).put(auth, updateGame);
+router.route("/deletegame/:cgameid").delete(auth, deleteGame);
+router.route("/getcreatedgames").get(auth, getCreatedGames);
+router.route("/getgames").get(auth, getGames);
+router.route("/searchcreatedgames/:search").get(auth, searchCreatedGames);
 
 module.exports = router;

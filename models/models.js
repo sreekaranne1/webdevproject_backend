@@ -78,7 +78,7 @@ var createdGames = new Schema({
     type: String,
     required: true,
   },
-  image: {
+  background_image: {
     type: String,
   },
   genres: {
@@ -93,7 +93,6 @@ var createdGames = new Schema({
     type: Array,
   },
 });
-
 var detailsSchema = new Schema({
   gameid: {
     type: Number,

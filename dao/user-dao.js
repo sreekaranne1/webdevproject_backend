@@ -29,13 +29,11 @@ exports.registerUserDao = async (req, res, next) => {
       dob: req.body.dob,
       following_list: [],
       followers_list: [],
+      createdGames: [],
       activity: [],
       followers_count: 0,
       following_count: 0,
     };
-    if (req.body.role == "creator") {
-      user.createdGames = [];
-    }
     //Db save
     user = await User.create(user);
 
@@ -124,6 +122,7 @@ exports.getUserDao = async (req, res, next) => {
         path: "activity",
         populate: { path: "review", model: "Review" },
       })
+      .populate("createdGames")
       .lean()
       .then(async (user) => {
         if (user) {
@@ -175,7 +174,7 @@ exports.updateProfileDao = async (req, res, next) => {
         return res.json({
           status: 404,
           updated: false,
-          msg: "Username does not exist",
+          msg: "User does not exist",
         });
       }
     });
