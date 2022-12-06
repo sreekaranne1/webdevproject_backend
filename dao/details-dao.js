@@ -206,6 +206,10 @@ exports.addreviewDao = async (req, res, next) => {
         }
         if (activity._id) {
           if (review) {
+            await review.updateOne({
+              review: req.body.review,
+              rating: req.body.rating,
+            });
           } else {
             review = await createReview(
               user._id,
@@ -334,19 +338,30 @@ exports.deleteReviewDao = async (req, res, next) => {
                 date: Date.now(),
               });
               if (user.acknowledged) {
-                let userActivities = await User.findOne({
-                  _id: req.user.id,
-                })
-                  .populate({
-                    path: "activity",
-                    populate: { path: "review", model: "Review" },
-                  })
-                  .lean();
-                return res.json({
-                  status: 200,
-                  msg: "success",
-                  activity: userActivities.activity,
+                const review = await Review.deleteOne({
+                  uid: req.user.id,
+                  gameid: req.params.gameid,
                 });
+                if (review.deletedCount == 1) {
+                  let userActivities = await User.findOne({
+                    _id: req.user.id,
+                  })
+                    .populate({
+                      path: "activity",
+                      populate: { path: "review", model: "Review" },
+                    })
+                    .lean();
+                  return res.json({
+                    status: 200,
+                    msg: "success",
+                    activity: userActivities.activity,
+                  });
+                } else {
+                  return res.json({
+                    status: 500,
+                    msg: "deletion failed",
+                  });
+                }
               } else {
                 return res.json({
                   status: 500,
