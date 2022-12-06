@@ -27,9 +27,12 @@ exports.addFavoriteDao = async (req, res, next) => {
         };
         favorite = await Favorite.create(favorite);
         if (favorite._id) {
+          req.user.call = true;
+          let favorites = await this.getFavoritesDao(req, res, next);
           return res.json({
             status: 200,
             msg: "success",
+            favorites: favorites,
           });
         } else {
           return res.json({
@@ -61,9 +64,12 @@ exports.removeFavoriteDao = async (req, res, next) => {
         gameid: req.params.gameid,
       });
       if (favorite.deletedCount == 1) {
+        req.user.call = true;
+        let favorites = await this.getFavoritesDao(req, res, next);
         return res.json({
           status: 200,
           msg: "success",
+          favorites: favorites,
         });
       } else {
         return res.json({
