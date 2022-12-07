@@ -8,7 +8,9 @@ exports.createGameDao = async (req, res, next) => {
       genres: req.body.genres,
       description: req.body.description,
       stores: req.body.stores,
-      background_image: req.body.background_image,
+      // background_image: req.body.background_image,
+      background_image:
+        "https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg",
     };
     let user = await User.findOne({ _id: req.user.id });
     if (user) {
@@ -184,8 +186,15 @@ exports.getGamesDao = async (req, res, next) => {
   try {
     let user = await User.findOne({ _id: req.user.id });
     if (user && (user.role == "creator" || user.role == "streamer")) {
-      let myGame = await CreatedGames.findOne({ uid: req.params.cgameid });
+      let myGame = await CreatedGames.findOne({
+        _id: req.params.cgameid,
+      }).lean();
+      let user = await User.findOne({ _id: myGame.uid });
+      myGame.cretorFirstName = user.firstname;
+      myGame.creatorLastName = user.lastname;
+      myGame.creatorImage = user.profile_pic;
       if (myGame) {
+        console.log(myGame);
         return res.json({
           status: 200,
           msg: "success",

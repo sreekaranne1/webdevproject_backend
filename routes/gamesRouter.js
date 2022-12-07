@@ -17,7 +17,7 @@ const {
 router.route("/createdgame").post(auth, createGame).put(auth, updateGame);
 router.route("/deletegame/:cgameid").delete(auth, deleteGame);
 router.route("/getcreatedgames").get(auth, getCreatedGames);
-router.route("/getgames").get(auth, getGames);
+router.route("/getgame/:cgameid").get(auth, getGames);
 router.route("/searchcreatedgames/:search").get(auth, searchCreatedGames);
 
 module.exports = router;

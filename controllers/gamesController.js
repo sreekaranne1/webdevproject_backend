@@ -4,6 +4,7 @@ const {
   deleteGameDao,
   getCreatedGamesDao,
   searchCreatedGamesDao,
+  getGamesDao,
 } = require("../dao/games-dao");
 const { Validator } = require("node-input-validator");
 
