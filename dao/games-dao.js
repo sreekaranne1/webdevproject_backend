@@ -194,7 +194,6 @@ exports.getGamesDao = async (req, res, next) => {
       myGame.creatorLastName = user.lastname;
       myGame.creatorImage = user.profile_pic;
       if (myGame) {
-        console.log(myGame);
         return res.json({
           status: 200,
           msg: "success",
