@@ -1,4 +1,5 @@
 //Imports
+
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -19,11 +20,13 @@ const user_routes = require("./routes/userRoutes");
 const detail_routes = require("./routes/detailsRouter");
 const favorite_routes = require("./routes/favoriteRoutes");
 const games_routes = require("./routes/gamesRouter");
+const image_routes = require("./routes/imageRoutes");
 app.use("/", user_routes);
 app.use("/home", home_routes);
 app.use("/details", detail_routes);
 app.use("/favorites", favorite_routes);
 app.use("/games", games_routes);
+app.use("/image",image_routes);
 
 //Mongoose
 const connectDb = async () => {
@@ -43,3 +46,7 @@ connectDb();
 //Server
 const PORT = 8080;
 app.listen(PORT, console.log(`Server running on ${PORT}`));
+
+
+// ak - AKIAWO35CEIUTZ3AU7X7
+//sk- ECDzmLQOlvOp+7pbnmZ1DLG+M0XNHqdJGVd7v99z

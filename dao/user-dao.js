@@ -485,9 +485,6 @@ exports.getUserListDao = async (req, res, next) => {
     } else {
       users = await User.find({}).lean().limit(4);
     }
-    // if (users.length > 4) {
-    //   users = users.slice(0, 4);
-    // }
     const data = users.map((user) => {
       user.following = false;
       if (decoded.id) {
