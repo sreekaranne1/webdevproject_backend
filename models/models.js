@@ -92,6 +92,11 @@ var createdGames = new Schema({
   stores: {
     type: Array,
   },
+  handle:{
+    type:String,
+    required:true,
+    unique:true
+  }
 });
 var detailsSchema = new Schema({
   gameid: {

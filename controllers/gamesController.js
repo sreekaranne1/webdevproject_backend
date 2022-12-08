@@ -5,6 +5,7 @@ const {
   getCreatedGamesDao,
   searchCreatedGamesDao,
   getGamesDao,
+    checkHandleGamesDao
 } = require("../dao/games-dao");
 const { Validator } = require("node-input-validator");
 
@@ -14,6 +15,7 @@ exports.createGame = async (req, res, next) => {
     genres: "required",
     description: "required",
     stores: "required",
+    handle:"required"
   });
   const matched = await v.check();
   if (matched) {
@@ -78,3 +80,19 @@ exports.searchCreatedGames = async (req, res, next) => {
 exports.getCreatedGames = async (req, res, next) => {
   return await getCreatedGamesDao(req, res, next);
 };
+
+exports.checkHandleOfGame = async (req,res,next)=>{
+  const v = new Validator(req.params, {
+    handle: "required",
+  });
+  const matched = await v.check();
+  if (matched) {
+    return await checkHandleGamesDao(req,res,next);
+  } else {
+    return res.status(400).json({
+      msg: "incorrect parameters",
+      err: v.errors,
+    });
+  }
+
+}

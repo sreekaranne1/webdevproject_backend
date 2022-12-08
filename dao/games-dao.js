@@ -11,6 +11,7 @@ exports.createGameDao = async (req, res, next) => {
       // background_image: req.body.background_image,
       background_image:
         "https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg",
+      handle:req.body.handle
     };
     let user = await User.findOne({ _id: req.user.id });
     if (user) {
@@ -240,6 +241,24 @@ exports.searchCreatedGamesDao = async (req, res, next) => {
         err: "error",
         msg: "not authorized to search",
       });
+    }
+  } catch (err) {
+    return res.json({
+      status: 500,
+      err: err.stack,
+    });
+  }
+};
+
+
+exports.checkHandleGamesDao = async (req, res, next) => {
+  try {
+    const game = await CreatedGames.findOne({ handle: req.params.handle });
+    console.log("game",game)
+    if (game) {
+      return res.json({ status: 200, available: false });
+    } else {
+      return res.json({ status: 200, available: true });
     }
   } catch (err) {
     return res.json({

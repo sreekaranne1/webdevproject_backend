@@ -11,6 +11,7 @@ const {
   getCreatedGames,
   searchCreatedGames,
   getGames,
+  checkHandleOfGame
 } = require("../controllers/gamesController");
 
 // //Route config
@@ -19,5 +20,6 @@ router.route("/deletegame/:cgameid").delete(auth, deleteGame);
 router.route("/getcreatedgames").get(auth, getCreatedGames);
 router.route("/getgame/:cgameid").get(auth, getGames);
 router.route("/searchcreatedgames/:search").get(auth, searchCreatedGames);
+router.route("/checkhandle/:handle").get(auth, checkHandleOfGame);
 
 module.exports = router;

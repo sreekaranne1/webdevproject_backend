@@ -6,8 +6,7 @@ function auth(req, res, next) {
   const token = req.header("x-auth-token");
   if (!token) {
     return res
-      .status(401)
-      .json({ status: 401, msg: "Token failed. Auth denied" });
+      .json({ status: 401,err:"failed", msg: "Token failed. Auth denied" });
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -15,7 +14,7 @@ function auth(req, res, next) {
     req.token = token;
     return next();
   } catch (err) {
-    return res.json({ err: err });
+    return res.json({ status:500,err: err });
   }
 }
 
