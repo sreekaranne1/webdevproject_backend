@@ -9,9 +9,10 @@ exports.createGameDao = async (req, res, next) => {
       description: req.body.description,
       stores: req.body.stores,
       // background_image: req.body.background_image,
-      background_image:
-        "https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg",
-      handle:req.body.handle
+      background_image: req.body.background_image
+        ? req.body.background_image
+        : "https://webdevs3bucket.s3.us-west-2.amazonaws.com/defaultcoverpic.jpg",
+      handle: req.body.handle,
     };
     let user = await User.findOne({ _id: req.user.id });
     if (user) {
@@ -250,11 +251,10 @@ exports.searchCreatedGamesDao = async (req, res, next) => {
   }
 };
 
-
 exports.checkHandleGamesDao = async (req, res, next) => {
   try {
     const game = await CreatedGames.findOne({ handle: req.params.handle });
-    console.log("game",game)
+    console.log("game", game);
     if (game) {
       return res.json({ status: 200, available: false });
     } else {
