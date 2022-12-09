@@ -457,30 +457,94 @@ exports.updateReviewDao = async (req, res, next) => {
   }
 };
 
+// exports.getdetailsDao = async (req, res, next) => {
+//   try {
+//     let game = await Game.findOne({
+//       gameid: req.params.gameid,
+//     }).populate({
+//       path: "reviews",
+//       populate: { path: "uid", model: "User" },
+//     });
+//     let gamedetailsProcessed = { ...game._doc };
+//     let gamedetails = gamedetailsProcessed.reviews.map((review) => {
+//       return {
+//         _id: review._id,
+//         uid: review.uid._id,
+//         firstname: review.uid.firstname,
+//         lastname: review.uid.lastname,
+//         username: review.uid.username,
+//         userImage: review.uid.profile_pic,
+//         review: review.review,
+//         rating: review.rating,
+//         role: review.role,
+//         gameid: review.gameid,
+//       };
+//     });
+//     gamedetailsProcessed.reviews = gamedetails;
+//     if (gamedetailsProcessed) {
+//       gamedetailsProcessed["liked"] = false;
+//       gamedetailsProcessed["reviewed"] = false;
+//       gamedetailsProcessed["loggedin"] = false;
+//       gamedetailsProcessed["favorited"] = false;
+//       const token = req.header("x-auth-token");
+//       if (token) {
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         if (decoded.id) {
+//           gamedetailsProcessed["loggedin"] = true;
+//           gamedetailsProcessed["liked"] = false;
+//           gamedetailsProcessed["reviewed"] = false;
+//           if (
+//             gamedetailsProcessed.likes.find(
+//               (e) => e.toString() == decoded.id.toString()
+//             )
+//           ) {
+//             gamedetailsProcessed["liked"] = true;
+//           }
+//           if (
+//             gamedetailsProcessed.reviews.find(
+//               (e) => e.uid.toString() == decoded.id.toString()
+//             )
+//           ) {
+//             gamedetailsProcessed["reviewed"] = true;
+//           }
+//           let favorite = await Favorite.find({
+//             uid: decoded.id,
+//             gameid: req.params.gameid,
+//           });
+//           if (favorite) {
+//             gamedetailsProcessed["favorited"] = true;
+//           }
+//         }
+//       }
+//       return res.json({
+//         status: 200,
+//         msg: "success",
+//         data: gamedetailsProcessed,
+//       });
+//     } else {
+//       return res.json({
+//         status: 404,
+//         msg: "Game does not exist",
+//       });
+//     }
+//   } catch (err) {
+//     return res.json({
+//       status: 500,
+//       err: err.stack,
+//     });
+//   }
+// };
+
 exports.getdetailsDao = async (req, res, next) => {
   try {
-    let game = await Game.findOne({
+    let gamedetailsProcessed = await Game.findOne({
       gameid: req.params.gameid,
-    }).populate({
-      path: "reviews",
-      populate: { path: "uid", model: "User" },
-    });
-    let gamedetailsProcessed = { ...game._doc };
-    let gamedetails = gamedetailsProcessed.reviews.map((review) => {
-      return {
-        _id: review._id,
-        uid: review.uid._id,
-        firstname: review.uid.firstname,
-        lastname: review.uid.lastname,
-        username: review.uid.username,
-        userImage: review.uid.profile_pic,
-        review: review.review,
-        rating: review.rating,
-        role: review.role,
-        gameid: review.gameid,
-      };
-    });
-    gamedetailsProcessed.reviews = gamedetails;
+    })
+      .populate({
+        path: "reviews",
+        populate: { path: "uid", model: "User" },
+      })
+      .lean();
     if (gamedetailsProcessed) {
       gamedetailsProcessed["liked"] = false;
       gamedetailsProcessed["reviewed"] = false;
@@ -502,7 +566,7 @@ exports.getdetailsDao = async (req, res, next) => {
           }
           if (
             gamedetailsProcessed.reviews.find(
-              (e) => e.uid.toString() == decoded.id.toString()
+              (e) => e.uid._id.toString() == decoded.id.toString()
             )
           ) {
             gamedetailsProcessed["reviewed"] = true;
@@ -511,7 +575,7 @@ exports.getdetailsDao = async (req, res, next) => {
             uid: decoded.id,
             gameid: req.params.gameid,
           });
-          if (favorite) {
+          if (favorite.length != 0) {
             gamedetailsProcessed["favorited"] = true;
           }
         }
