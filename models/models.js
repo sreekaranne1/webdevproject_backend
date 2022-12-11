@@ -68,6 +68,7 @@ var userSchema = new Schema({
   followers_list: [{ type: mongoose.ObjectId, ref: "User" }],
   activity: [{ type: mongoose.ObjectId, ref: "Activity" }],
   createdGames: [{ type: mongoose.ObjectId, ref: "CreatedGames" }],
+  likes: [{ type: mongoose.ObjectId, ref: "Game" }],
   following_count: Number,
   followers_count: Number,
 });
@@ -92,11 +93,11 @@ var createdGames = new Schema({
   stores: {
     type: Array,
   },
-  handle:{
-    type:String,
-    required:true,
-    unique:true
-  }
+  handle: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 });
 var detailsSchema = new Schema({
   gameid: {

@@ -31,6 +31,7 @@ exports.registerUserDao = async (req, res, next) => {
       followers_list: [],
       createdGames: [],
       activity: [],
+      likes: [],
       followers_count: 0,
       following_count: 0,
     };

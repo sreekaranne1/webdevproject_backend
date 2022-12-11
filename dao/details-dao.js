@@ -32,8 +32,8 @@ exports.likeGameDao = async (req, res, next) => {
           if (!game.likes.find((e) => e.toString() == user._id.toString())) {
             game.likes.push(user._id);
           }
-          game = await game.updateOne({ likes: game.likes });
-          if (game.acknowledged) {
+          const gameU = await game.updateOne({ likes: game.likes });
+          if (gameU.acknowledged) {
             const activityRes = await activity.updateOne({
               liked: true,
               date: Date.now(),
@@ -45,9 +45,11 @@ exports.likeGameDao = async (req, res, next) => {
                 )
               ) {
                 user.activity.push(activity._id);
+                user.likes.push(game._id);
               }
               user = await user.updateOne({
                 activity: user.activity,
+                likes: user.likes,
               });
               if (user.acknowledged) {
                 let userActivities = await User.findOne({
@@ -127,12 +129,17 @@ exports.disLikeGameDao = async (req, res, next) => {
               (e) => e.toString() != activity._id.toString()
             );
           }
-          game = await game.updateOne({ likes: game.likes });
-          if (game.acknowledged) {
+          const gameU = await game.updateOne({ likes: game.likes });
+          if (gameU.acknowledged) {
             activity = await activity.updateOne({ liked: false });
+
             if (activity.acknowledged) {
+              user.likes = user.likes.filter(
+                (e) => e.toString() != game._id.toString()
+              );
               user = await user.updateOne({
                 activity: user.activity,
+                likes: user.likes,
               });
               if (user.acknowledged) {
                 let userActivities = await User.findOne({
